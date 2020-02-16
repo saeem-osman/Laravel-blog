@@ -16,7 +16,11 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('blog_post_id')->index();
-            $table->text('content');
+            if(env('DB_CONNECTION') === 'sqlite_testing'){
+                $table->text('content')->default('');
+            }else{
+                $table->text('content');
+            }
             $table->timestamps();
             $table->foreign('blog_post_id')->references('id')->on('blogposts');
         });

@@ -81,14 +81,14 @@ class PostTest extends TestCase
         // dd($message->getMessages());
     }
     public function testUpdatePost(){
-        
-        $post = $this->createDummyBlogPost();
+        $user = $this->user();
+        $post = $this->createDummyBlogPost($user->id);
 
         $params = [
             'title'=> 'This is updated title',
             'content'=> 'This is updated content'
         ];
-        $this->actingAs($this->user())
+        $this->actingAs($user)
             ->put("/posts/{$post->id}",$params)
                 ->assertStatus(302)
                     ->assertSessionHas('status');
@@ -100,24 +100,30 @@ class PostTest extends TestCase
 
     }
     public function testDelete(){
-        $post = $this->createDummyBlogPost();
+        $user = $this->user();
+        $post = $this->createDummyBlogPost($user);
         $this->assertDatabaseHas('blogposts',$post->toArray());
-        $this->actingAs($this->user())
+        $this->actingAs($user)
             ->delete("/posts/{$post->id}")
             ->assertStatus(302)
                 ->assertSessionHas('status');
         $this->assertEquals(session('status'),'Post has been Deleted');
-        $this->assertDatabaseMissing('blogposts',$post->toArray());
+        // $this->assertDatabaseMissing('blogposts',$post->toArray());
+        $this->assertSoftDeleted('blogposts', $post->toArray());
 
     }
 
-    private function createDummyBlogPost(): BlogPost{
+    private function createDummyBlogPost($userId = null): BlogPost{
         // $post = new BlogPost();
         // $post->title = 'A new post for testing';
         // $post->content = 'This is the content part of the new post';
         // $post->save();
         // return $post;
-        return factory(BlogPost::class)->states('new_title')->create();
+        return factory(BlogPost::class)->states('new_title')->create(
+            [
+                'user_id' => $userId ?? $this->user()->id,
+            ]
+        );
         
     }
 }

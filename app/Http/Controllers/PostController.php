@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\BlogPost;
 use App\Http\Requests\StorePost;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+
 
 class PostController extends Controller
 {
@@ -43,6 +45,7 @@ class PostController extends Controller
     public function create()
     {
         //
+        // $this->authorize('posts.create');
         return view('posts.create');
     }
 
@@ -55,6 +58,7 @@ class PostController extends Controller
     public function store(StorePost $request)
     {
         $validateData = $request->validated();
+        $validateData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validateData);
         // $blogPost->title = $request->input('title');
         // $blogPost->content = $request->input('content');
@@ -75,6 +79,9 @@ class PostController extends Controller
         //
     //    // dd(BlogPost::find($id));
         //$request->session()->reflash();
+        // return view('posts.show',['post'=> BlogPost::with(['comments'=> function($query){
+        //     return $query->latest();
+        // }])->findOrFail($id)]);
         return view('posts.show',['post'=> BlogPost::with('comments')->findOrFail($id)]);
     }
 
@@ -88,6 +95,12 @@ class PostController extends Controller
     {
         //
         $post = BlogPost::findOrFail($id);
+        // if(Gate::denies('posts.update', $post)){
+        //     abort(403, 'You are not able to update this post.');
+        // }
+        // $this->authorize('update',$post);
+        // the upper line is similar to the line below
+        $this->authorize($post);
         return view('posts.edit',['post'=>$post]);
     }
 
@@ -101,6 +114,11 @@ class PostController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+        $this->authorize('update',$post);
+        // $this->authorize('delete-post',$post);
+        // if(Gate::denies('posts.update', $post)){
+        //     abort(403, 'You are not able to update this post.');
+        // }
         $validateData = $request->validated();
         $post->fill($validateData);
         $post->save();
@@ -119,6 +137,11 @@ class PostController extends Controller
     {
         //
         $post = BlogPost::findOrFail($id);
+        // if(Gate::denies('delete-post', $post)){
+        //     abort(403, 'You are not able to delete this post.');
+        // }
+        // $this->authorize('posts.delete',$post);
+        $this->authorize($post);
         $post->delete();
 
         $request->session()->flash('status','Post has been Deleted');

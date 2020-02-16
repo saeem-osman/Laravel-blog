@@ -25,6 +25,10 @@
 Route::get('/','HomeController@home')->name('home')
 // ->middleware('auth')
 ;
+Route::get('/secret', 'HomeController@secret')
+    ->name('secret')
+    ->middleware('can:home.secret');
+
 Route::get('/about','HomeController@about')->name('about');
 // Route::resource('/posts','PostController')->only(['index','show','create','store']);
 // Route::resource('/posts','PostController')->only(['index','show','create','store','edit','update']);
