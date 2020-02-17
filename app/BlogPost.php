@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Scopes\LatestScope;
+use App\Scopes\DeletedAdminScope;
 use Illuminate\Database\Eloquent\Builder;
 
 class BlogPost extends Model
@@ -31,6 +32,7 @@ class BlogPost extends Model
     }
 
     public static function boot(){
+        static::addGlobalScope(new DeletedAdminScope);
          parent::boot();
         static::deleting(function (BlogPost $post){
             $post->comments()->delete();

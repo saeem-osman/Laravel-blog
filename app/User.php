@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use App\BlogPost;
 
 class User extends Authenticatable
@@ -40,5 +41,17 @@ class User extends Authenticatable
     //relation with post with user
     public function blogposts(){
         return $this->hasMany(BlogPost::class);
+    }
+
+    public function scopeWithMostBlogPosts(Builder $query){
+        $query->withCount('blogposts')->orderBy('blogposts_count', 'desc');
+    }
+
+    public function scopeWithMostActivityLastMonth(Builder $query){
+        return $query->withCount(['blogposts' => function(Builder $query){
+            $query->whereBetween(static::CREATED_AT, [now()->subMonths(1),now()]);
+        }])
+        ->has('blogposts','>=',2)
+        ->orderBy('blogposts_count','desc');
     }
 }
