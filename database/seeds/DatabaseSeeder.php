@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Cache;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Cache::tags(['blog-posts'])->flush();
         if($this->command->confirm('Do you want to refresh the database?')){
             $this->command->call('migrate:refresh');
             $this->command->info('Database was refreshed!!');

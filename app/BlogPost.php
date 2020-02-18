@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Scopes\LatestScope;
 use App\Scopes\DeletedAdminScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
@@ -16,6 +17,11 @@ class BlogPost extends Model
     public function user(){
         return $this->belongsTo('App\User');
     }
+
+    public function tags(){
+        return $this->belongsToMany('App\Tag')->withTimeStamps();
+    }
+
      protected $table = 'blogposts';
         protected $fillable = [
             'title','content','user_id'
@@ -40,6 +46,9 @@ class BlogPost extends Model
         // static::addGlobalScope(new LatestScope);
         static::restoring(function(BlogPost $post){
             $post->comments()->restore();
+        });
+        static::updating(function(BlogPost $post){
+            $post->forget('blog-post-{$blog->id}');
         });
     }
 }

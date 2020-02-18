@@ -18,20 +18,24 @@
         @updated(['date'=>$post->created_at, 'name'=>$post->user->name])
 
         @endupdated
-        @can('update', $post)
+        @auth
+            @can('update', $post)
             <a class="btn btn-primary" href="{{route('posts.edit',['post'=>$post->id])}}">
                 Edit
             </a> 
-        @endcan
+            @endcan
+        @endauth
         @if (!$post->trashed())
-        @can('delete', $post)
+        @auth
+            @can('delete', $post)
             <form class="fm-line"
             method="POST" action="{{route('posts.destroy',['post'=>$post->id])}}">
             @csrf
             @method('DELETE')
             <button class="btn btn-danger" type="submit">Delete</button>
         </form>
-        @endcan      
+        @endcan
+        @endauth      
         @endif
         <hr>
     @empty
