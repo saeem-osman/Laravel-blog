@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\BlogPost;
 use App\User;
+use App\Image;
 use App\Http\Requests\StorePost;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -51,6 +53,28 @@ class PostController extends Controller
         $validateData = $request->validated();
         $validateData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validateData);
+
+        if($request->hasFile('thumbnail')){
+            $path = $request->file('thumbnail')->store('thumbnails');
+            $blogPost->image()->save(
+                Image::create(['path' => $path])
+            );
+
+            
+
+
+
+
+            //***** File upload in laravel */
+            // dump($file->getClientMimeType());
+            // dump($file->getClientOriginalExtension());
+            // dump($file->store('thumbnails'));
+            // dump(Storage::disk('public')->putFile('thumbnails',$file));
+            // $name1 = dump($file->storeAs('thumbnails', $blogPost->id . '.' . $file->guessExtension()));
+            // $name2 = dump(Storage::disk('local')->putFileAs('thumbnails',$file,$blogPost->id . '.' . $file->guessExtension()));
+            // dump(Storage::url($name1));
+            // dump(Storage::disk('local')->url($name2));
+        }
         // $blogPost->title = $request->input('title');
         // $blogPost->content = $request->input('content');
         // $blogPost->save();
@@ -160,6 +184,19 @@ class PostController extends Controller
         // }
         $validateData = $request->validated();
         $post->fill($validateData);
+        if($request->hasFile('thumbnail')){
+            $path = $request->file('thumbnail')->store('thumbnails');
+            if($post->image){
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            }else{
+                $post->image()->save(
+                    Image::create(['path' => $path])
+                );
+            
+            }
+        }
         $post->save();
         $request->session()->flash('status','Post has been updated');
         return redirect()->route('posts.show',['post'=>$post->id]);

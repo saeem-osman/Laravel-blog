@@ -21,7 +21,6 @@ class BlogPost extends Model
     public function tags(){
         // return $this->belongsToMany('App\Tag')->withTimeStamps();
         return $this->belongsToMany('App\Tag')->withTimeStamps();
-
     }
 
      protected $table = 'blogposts';
@@ -30,6 +29,10 @@ class BlogPost extends Model
         ];
     public function comments(){
         return $this->hasMany('App\Comment')->latest();
+    }
+
+    public function image(){
+        return $this->hasOne('App\Image');
     }
 
     public function scopeLatest(Builder $query){
