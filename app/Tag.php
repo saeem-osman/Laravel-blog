@@ -8,6 +8,8 @@ class Tag extends Model
 {
     //
     public function blogposts(){
-        return $this->belongsToMany('App/BlogPost')->withTimeStamps();
+        // return $this->belongsToMany('App/BlogPost')->withTimeStamps();
+        return $this->belongsToMany('App\BlogPost')->withTimeStamps();
+
     }
 }

@@ -6,12 +6,5 @@
     <label>Content</label>
     <textarea class="form-control" name="content">{{old('content',$post->content ?? null)}}</textarea>
 </div>
-@if ($errors->any())
-    <div>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li><p class=""> {{$error}}</p></li>
-            @endforeach
-        </ul>
-    </div>    
-@endif
+@errors 
+@enderrors

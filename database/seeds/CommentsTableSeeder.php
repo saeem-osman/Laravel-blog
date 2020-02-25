@@ -12,12 +12,14 @@ class CommentsTableSeeder extends Seeder
     public function run()
     {
         $posts = App\BlogPost::all();
+        $users = App\User::all();
         if($posts->count()<1){
             $this->command->info('There is no blog posts. So no comment will be added');
             return;
         }
         $commentCount = (int)$this->command->ask('How many comments? ', 150);
-        factory(App\Comment::class, $commentCount)->make()->each(function($comment) use($posts){
+        factory(App\Comment::class, $commentCount)->make()->each(function($comment) use($posts,$users){
+            $comment->user_id = $users->random()->id;
             $comment->blog_post_id = $posts->random()->id;
             $comment->save();
         });

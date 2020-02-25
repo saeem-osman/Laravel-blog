@@ -23,20 +23,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $most_commented = Cache::tags(['blog-posts'])->remember('most_commented', now()->addSeconds(10), function(){
-            return BlogPost::mostCommented()->take(5)->get();
-        });
-        $most_active = Cache::tags(['blog-posts'])->remember('most_active', now()->addSeconds(10), function(){
-            return User::withMostBlogPosts()->take(5)->get();
-        });
-        $last_month_user = Cache::tags(['blog-posts'])->remember('last_month_user', now()->addSeconds(10), function(){
-            return User::withMostActivityLastMonth()->take(5)->get();
-        });
         return view('posts.index',[
-            'posts'=> BlogPost::withCount('comments')->with('user')->get(),
-            'most_commented' => $most_commented,
-            'most_active' => $most_active,
-            'last_month_user'=> $last_month_user
+            'posts'=> BlogPost::latestWithRelations()->get()
             ]);
     }
 
@@ -105,7 +93,7 @@ class PostController extends Controller
         }
 
         if(!array_key_exists($sessionId,$users)
-            || $now->diffInMinutes($users[$sessionId]) <= 1
+            || $now->diffInMinutes($users[$sessionId]) >= 1
         ){
             $difference++;
         }
@@ -122,7 +110,13 @@ class PostController extends Controller
         $counter = Cache::tags(['blog-posts'])->get($counterKey);
 
         $blogPost = Cache::tags(['blog-posts'])->remember('blog-post-{$id}',60, function() use($id){
-            return BlogPost::with('comments')->findOrFail($id);
+            // return BlogPost::with('comments')
+            //                 ->with('tags')
+            //                 ->with('user')
+            //                 ->with('comments.user')
+            //                 ->findOrFail($id);
+            //same as below
+                return BlogPost::with('comments','tags','user','comments.user')->findOrFail($id);
         });
         return view('posts.show',[
             'post'=> $blogPost,

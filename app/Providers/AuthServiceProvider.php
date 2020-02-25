@@ -44,6 +44,8 @@ class AuthServiceProvider extends ServiceProvider
 
         //resource will get all default action out of the box
         // Gate::resource('posts', 'App\Policies\BlogPostPolicy');
+        Gate::define('posts.update', "App\Policies\BlogPostPolicy@update");
+        Gate::define('posts.delete', "App\Policies\BlogPostPolicy@delete");
 
         Gate::before(function($user, $ability){
             if($user->is_admin && in_array($ability,['update','delete'])){

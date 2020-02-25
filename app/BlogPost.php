@@ -19,7 +19,9 @@ class BlogPost extends Model
     }
 
     public function tags(){
+        // return $this->belongsToMany('App\Tag')->withTimeStamps();
         return $this->belongsToMany('App\Tag')->withTimeStamps();
+
     }
 
      protected $table = 'blogposts';
@@ -37,18 +39,27 @@ class BlogPost extends Model
         return $query->withCount('comments')->orderBy('comments_count','desc');
     }
 
+    public function scopeLatestWithRelations(Builder $query){
+        return $query->latest()
+        ->withCount('comments')
+        ->with('user')
+        ->with('tags');
+    }
+
     public static function boot(){
         static::addGlobalScope(new DeletedAdminScope);
          parent::boot();
         static::deleting(function (BlogPost $post){
             $post->comments()->delete();
+            Cache::tags(['blog-post'])->forget('blog-post-{$post->id}');
+
         });
         // static::addGlobalScope(new LatestScope);
         static::restoring(function(BlogPost $post){
             $post->comments()->restore();
         });
         static::updating(function(BlogPost $post){
-            $post->forget('blog-post-{$blog->id}');
+            Cache::tags(['blog-post'])->forget('blog-post-{post->id}');
         });
     }
 }
