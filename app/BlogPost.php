@@ -23,7 +23,7 @@ class BlogPost extends Model
         return $this->belongsToMany('App\Tag')->withTimeStamps();
     }
 
-     protected $table = 'blogposts';
+    //  protected $table = 'blogposts';
         protected $fillable = [
             'title','content','user_id'
         ];
@@ -32,7 +32,7 @@ class BlogPost extends Model
     }
 
     public function image(){
-        return $this->hasOne('App\Image');
+        return $this->morphOne('App\Image','imageable');
     }
 
     public function scopeLatest(Builder $query){

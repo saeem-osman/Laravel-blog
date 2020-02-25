@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBlogpostTagTable extends Migration
+class CreateBlogPostTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateBlogpostTagTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('blog_post_id')->index();
             $table->foreign('blog_post_id')->references('id')
-                ->on('blogposts')
+                ->on('blog_posts')
                 ->onDelete('cascade');
             $table->unsignedBigInteger('tag_id')->index();
             $table->foreign('tag_id')->references('id')

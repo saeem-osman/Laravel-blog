@@ -14,16 +14,14 @@ class AddCascadeDeleteToCommentsTable extends Migration
     public function up()
     {
         Schema::table('comments', function (Blueprint $table) {
-            //
-            if(env('DB_CONNECTION') !== 'sqlite_testing'){
+            if (env('DB_CONNECTION') !== 'sqlite_testing') {
                 $table->dropForeign(['blog_post_id']);
-
             }
+            
             $table->foreign('blog_post_id')
                 ->references('id')
-                    ->on('blogposts');
-                        // ->onDelete('cascade');
-
+                ->on('blog_posts')
+                ->onDelete('cascade');
         });
     }
 
@@ -38,7 +36,7 @@ class AddCascadeDeleteToCommentsTable extends Migration
             $table->dropForeign(['blog_post_id']);
             $table->foreign('blog_post_id')
                 ->references('id')
-                    ->on('blogposts');
+                ->on('blog_posts');
         });
     }
 }
