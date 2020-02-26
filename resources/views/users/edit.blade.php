@@ -1,13 +1,13 @@
 @extends('layout')
 
 @section('content')
-    <form action="POST" enctype="multipart/form-data" class="form-horizontal"
-        method="{{ route('users.update',['user' => $user->id]) }}">
+    <form method="POST" enctype="multipart/form-data" class="form-horizontal"
+        action="{{ route('users.update',['user' => $user->id]) }}">
         @csrf
         @method("PUT")
         <div class="row">
             <div class="col-4">
-                <img src="" class="img-thumbnail avatar" />
+                <img src="{{$user->image ? $user->image->url() : ''}}" class="img-thumbnail avatar" />
 
                 <div class="card mt-4">
                     <div class="card-body">
@@ -21,6 +21,7 @@
                     <label>Name:</label>
                     <input class="form-control" value="" type="text" name="name" />
                 </div>
+                @errors @enderrors
 
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Save Changes" />

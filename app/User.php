@@ -46,6 +46,10 @@ class User extends Authenticatable
     public function comments(){
         return $this->hasMany('App\Comment');
     }
+    //polymorphic relation with user to image
+    public function image(){
+        return $this->morphOne('App\Image','imageable');
+    }
 
     public function scopeWithMostBlogPosts(Builder $query){
         $query->withCount('blogposts')->orderBy('blogposts_count', 'desc');
