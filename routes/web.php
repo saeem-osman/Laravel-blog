@@ -35,6 +35,7 @@ Route::get('/about','HomeController@about')->name('about');
 // Route::resource('/posts','PostController')->except(['destroy']);
 Route::resource('posts','PostController');
 Route::resource('posts.comments', 'PostCommentController')->only(['store']);
+Route::resource('users.comments', 'UserCommentController')->only(['store']);
 Route::get('/posts/tags/{tag}','PostTagController@index')->name('posts.tags.index');
 Auth::routes();
 

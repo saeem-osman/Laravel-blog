@@ -42,6 +42,11 @@ class User extends Authenticatable
     public function blogposts(){
         return $this->hasMany(BlogPost::class);
     }
+
+    public function commentsOn()
+    {
+        return $this->morphMany('App\Comment', 'commentable')->latest();
+    }
     //relation with comments with user
     public function comments(){
         return $this->hasMany('App\Comment');

@@ -28,7 +28,7 @@ class BlogPost extends Model
             'title','content','user_id'
         ];
     public function comments(){
-        return $this->hasMany('App\Comment')->latest();
+        return $this->morphMany('App\Comment', 'commentable')->latest();
     }
 
     public function image(){
