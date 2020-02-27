@@ -8,20 +8,22 @@ use Scopes\LatestScope;
 use App\Scopes\DeletedAdminScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
+use App\Traits\Taggable;
 
 class BlogPost extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Taggable;
     // //
     //retationship with blogpost to user
     public function user(){
         return $this->belongsTo('App\User');
     }
 
-    public function tags(){
-        // return $this->belongsToMany('App\Tag')->withTimeStamps();
-        return $this->belongsToMany('App\Tag')->withTimeStamps();
-    }
+    // public function tags(){
+        //not used// replace with traits
+    //     // return $this->belongsToMany('App\Tag')->withTimeStamps();
+    //     return $this->morphToMany('App\Tag','taggable')->withTimeStamps();
+    // }
 
     //  protected $table = 'blogposts';
         protected $fillable = [

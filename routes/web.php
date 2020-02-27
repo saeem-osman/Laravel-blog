@@ -39,5 +39,10 @@ Route::resource('users.comments', 'UserCommentController')->only(['store']);
 Route::get('/posts/tags/{tag}','PostTagController@index')->name('posts.tags.index');
 Auth::routes();
 
+Route::get('mailable', function(){
+    $comment = App\Comment::find(1);
+    return new App\Mail\CommentPostedMarkdown($comment);
+});
+
 //user
 Route::resource('users', 'UserController')->only(['show','edit','update']);

@@ -7,19 +7,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use App\Scopes\LatestScope;
 use Illuminate\Support\Facades\Cache;
+use App\Traits\Taggable;
 
 
 class Comment extends Model
 {
     //
     protected $fillable = ['user_id','content'];
-    use SoftDeletes;
+    use SoftDeletes, Taggable;
     public function commentable(){
         return $this->morphTo();
     }
     public function user(){
         return $this->belongsTo('App\User');
     }
+
+    // public function tags(){
+        //not used now
+    //     return $this->morphToMany('App\Tag','taggable')->withTimeStamps();
+    // }
 
     public static function boot(){
         parent::boot();
