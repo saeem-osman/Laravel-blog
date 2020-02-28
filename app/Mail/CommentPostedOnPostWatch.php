@@ -7,20 +7,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Comment;
+use App\User;
 
-class CommentPostedMarkdown extends Mailable
+class CommentPostedOnPostWatch extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-    public $comment;
-
+    public $comment, $user;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Comment $comment, User $user)
     {
         $this->comment = $comment;
+        $this->user = $user;
     }
 
     /**
@@ -30,10 +31,7 @@ class CommentPostedMarkdown extends Mailable
      */
     public function build()
     {
-        
-        $subject = "Comment was posted on your <<{$this->comment->commentable->title} >> blogpost.";
-        return $this->subject($subject)
-            ->from('admin@lara.com','admin')
-                ->markdown('emails.posts.commented-markdown');
+        return $this->from('admin@batman.com','batman')
+                    ->markdown('emails.posts.comment-posted-on-watch');
     }
 }

@@ -51,6 +51,7 @@ class BlogPost extends Model
         ->with('tags');
     }
 
+
     public static function boot(){
         static::addGlobalScope(new DeletedAdminScope);
          parent::boot();
