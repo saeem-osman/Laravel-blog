@@ -55,17 +55,6 @@ class BlogPost extends Model
     public static function boot(){
         static::addGlobalScope(new DeletedAdminScope);
          parent::boot();
-        static::deleting(function (BlogPost $post){
-            $post->comments()->delete();
-            Cache::tags(['blog-post'])->forget('blog-post-{$post->id}');
-
-        });
-        // static::addGlobalScope(new LatestScope);
-        static::restoring(function(BlogPost $post){
-            $post->comments()->restore();
-        });
-        static::updating(function(BlogPost $post){
-            Cache::tags(['blog-post'])->forget('blog-post-{post->id}');
-        });
+        
     }
 }

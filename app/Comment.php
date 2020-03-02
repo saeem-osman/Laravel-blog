@@ -27,17 +27,17 @@ class Comment extends Model
     //     return $this->morphToMany('App\Tag','taggable')->withTimeStamps();
     // }
 
-    public static function boot(){
-        parent::boot();
-        // static::addGlobalScope(new LatestScope);
-        static::creating(function(Comment $comment){
-            if($comment->commentable_type === BlogPost::class){
-                Cache::tags(['blog-post'])->forget('blog-post-{$comment->commentable_id}');
-                Cache::tags(['blog-post'])->forget('most_commented');
-            }
+    // public static function boot(){
+    //     parent::boot();
+    //     // static::addGlobalScope(new LatestScope);
+    //     static::creating(function(Comment $comment){
+    //         if($comment->commentable_type === BlogPost::class){
+    //             Cache::tags(['blog-post'])->forget('blog-post-{$comment->commentable_id}');
+    //             Cache::tags(['blog-post'])->forget('most_commented');
+    //         }
            
-        });
-    }
+    //     });
+    // }
 
     public function scopeLatest(Builder $query){
         return $query->orderBy(static::CREATED_AT, 'desc');

@@ -17,8 +17,6 @@ class UserCommentController extends Controller
             'content' => $request->input('content'),
             'user_id' => $request->user()->id
         ]);
-
-        
         return redirect()->back()->withStatus('Comment was created!');
     }
 }
