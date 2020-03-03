@@ -27,7 +27,7 @@
         @updated(['date'=>$post->updated_at])
             Updated
         @endupdated
-        <p class="lead">Currently read by {{$counter}} people. </p>
+        <p class="lead">{{trans_choice('messages.people.reading', $counter)}} </p>
         @tags([ 'tags'=> $post->tags ])  @endtags
         <h4 class="lead">Comments</h4>
         @commentForm(['route' => route('posts.comments.store',['post' => $post->id])])

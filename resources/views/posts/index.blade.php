@@ -10,11 +10,8 @@
         @if($post->trashed())
         </del>
         @endif
-        @if ($post->comments_count)
-            <p>{{$post->comments_count}} comments </p>
-        @else
-            <p>No comments yet </p>
-        @endif
+        
+        {{ trans_choice('messages.comments', $post->comments_count)}}
         @updated(['date'=>$post->created_at, 'name'=>$post->user->name, 'userId' => $post->user->id])
 
         @endupdated

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use App\Events\BlogPostPosted;
 
 class PostController extends Controller
 {
@@ -78,6 +79,8 @@ class PostController extends Controller
         // $blogPost->title = $request->input('title');
         // $blogPost->content = $request->input('content');
         // $blogPost->save();
+
+        event(new BlogPostPosted($blogPost));
 
         $request->session()->flash('status','A new blog post has been created');
         return redirect()->route('posts.show',['post'=>$blogPost->id]);
