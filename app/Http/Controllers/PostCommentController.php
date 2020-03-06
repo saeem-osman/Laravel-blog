@@ -9,6 +9,7 @@ use App\Mail\CommentPostedMarkdown;
 use App\Jobs\NotifyUsersPostWasCommented;
 use App\Jobs\ThrottledMail;
 use App\Events\CommentPosted;
+use App\Http\Resources\Comment as CommentResource;
 
 class PostCommentController extends Controller
 {
@@ -16,6 +17,15 @@ class PostCommentController extends Controller
         $this->middleware('auth')->only(['store']);
     }
     //
+
+    public function index(BlogPost $post){
+        // dump(get_class($post->comments)); 
+        // dump(is_array($post->comments));
+        // die;
+        return CommentResource::collection($post->comments()->with('user')->get());
+        // return new CommentResource($post->comments->first());
+        // return $post->comments()->with('user')->with('tags')->get();
+    }
     public function store(BlogPost $post, StoreComment $request){
         $comment = $post->comments()->create([
             'content' => $request->input('content'),

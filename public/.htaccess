@@ -14,6 +14,12 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # /de/posts -> /posts?locale=de
+    # /de -> /?locale=de
+    # /es/posts/1 -> /posts/14?local=es
+    # /de/user/1 -> /user/1?local=de
+    RedirectMatch "^/(en|de|es|jp)/?(.*)?" "/$2?locale=$1"
+
     # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

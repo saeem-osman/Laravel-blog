@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Builder;
 class User extends Authenticatable
 {
     use Notifiable;
+    public const LOCALES = [
+        'en' => "English",
+        'es' => 'Espanol',
+        'de' => 'Deutch',
+        'jp' => 'Japanese' 
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -20,15 +26,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password',
     ];
+    protected $hidden = ['email','password','remember_token','created_at','email_verified_at','updated_at','is_admin'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    
 
     /**
      * The attributes that should be cast to native types.

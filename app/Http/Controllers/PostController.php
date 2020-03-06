@@ -12,9 +12,11 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Events\BlogPostPosted;
+use App\Facades\CounterFacade;
 
 class PostController extends Controller
 {
+    
     public function __construct(){
         $this->middleware('auth')
         ->only(['create','edit','store','update','destroy']);
@@ -29,6 +31,7 @@ class PostController extends Controller
         return view('posts.index',[
             'posts'=> BlogPost::latestWithRelations()->get()
             ]);
+        // return BlogPost::latestWithRelations()->get();
     }
 
     /**
@@ -102,40 +105,6 @@ class PostController extends Controller
         // }])->findOrFail($id)]);
         
         //checking the currently active user on our blogpost
-        $sessionId = session()->getId();
-        $counterKey = "blog-post-{$id}-counter";
-        $userKey = "blog-post-{$id}-users";
-
-        $users = Cache::tags(['blog-posts'])->get($userKey, []);
-        $userUpdate = [];
-        $difference = 0;
-        $now = now();
-
-        foreach($users as $session => $lastVisit){
-            if($now->diffInMinutes($lastVisit) >= 1){
-                $difference--;
-            }else{
-                $usersUpdate[$session] = $lastVisit;
-            }
-        }
-
-        if(!array_key_exists($sessionId,$users)
-            || $now->diffInMinutes($users[$sessionId]) >= 1
-        ){
-            $difference++;
-        }
-        
-        $usersUpdate[$sessionId] = $now;
-        Cache::tags(['blog-posts'])->forever($userKey, $userUpdate);
-        
-        if(!Cache::tags(['blog-posts'])->has($counterKey)){
-            Cache::tags(['blog-posts'])->forever($counterKey,1);
-        }else{
-            Cache::tags(['blog-posts'])->increment($counterKey, $difference);
-        }
-
-        $counter = Cache::tags(['blog-posts'])->get($counterKey);
-
         $blogPost = Cache::tags(['blog-posts'])->remember('blog-post-{$id}',60, function() use($id){
             // return BlogPost::with('comments')
             //                 ->with('tags')
@@ -145,9 +114,11 @@ class PostController extends Controller
             //same as below
                 return BlogPost::with('comments','tags','user','comments.user')->findOrFail($id);
         });
+        // $counter = resolve(Counter::class);
+        // dd($this->counter);
         return view('posts.show',[
             'post'=> $blogPost,
-            'counter'=> $counter
+            'counter'=> CounterFacade::increments("blog-post-{$id}", ['blog-post']),
             ]);
     }
 

@@ -6,12 +6,14 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateUser;
 use App\Image;
-
+use App\Facades\CounterFacade;
 class UserController extends Controller
 {
+    
     public function __construct(){
         $this->middleware('auth');
         $this->authorizeResource(User::class, 'user');
+        
     }
     /**
      * Display a listing of the resource.
@@ -52,7 +54,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('users.show',['user' => $user]);
+        // $counter = resolve(Counter::class);
+        return view('users.show',[
+            'user' => $user,
+            'counter' => CounterFacade::increments("user-{$user->id}")
+            ]);
     }
 
     /**
@@ -87,8 +93,10 @@ class UserController extends Controller
                 );
             }
         }
-
-        return redirect()->back()->withStatus('Profile Image was updated');
+        $user->locale = $request->get('locale');
+        $user->name = $request->get('name');
+        $user->save();
+        return redirect()->back()->withStatus('Profile was updated');
 
 
     }

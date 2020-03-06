@@ -18,8 +18,20 @@
             </div>
             <div class="col-8">
                 <div class="form-group">
-                    <label>Name:</label>
-                    <input class="form-control" value="" type="text" name="name" />
+                <label>{{__('Name:')}}</label>
+                <input class="form-control" value="{{$user->name}}" type="text" name="name" />
+                </div>
+                <div class="form-group">
+                    <label>{{__('Language:')}}</label>
+                    <select class="form-control" name="locale">
+                        @forelse (App\User::LOCALES as $locale => $label)
+                            <option value="{{$locale}}" {{$user->locale != $locale ? : 'selected'}}>
+                                {{$label}}
+                            </option>
+                        @empty
+                            
+                        @endforelse
+                    </select>
                 </div>
                 @errors @enderrors
 
