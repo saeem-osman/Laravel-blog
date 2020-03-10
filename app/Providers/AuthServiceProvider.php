@@ -6,6 +6,8 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use App\Policy\BlogPostPolicy;
 use Illuminate\Support\Facades\Blade;
+use App\Comment;
+use App\Policies\CommentPolicy;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -15,8 +17,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
          'App\Model' => 'App\Policies\ModelPolicy',
+         'App\Comment' => 'App\Policies\CommentPolicy',
          'App\BlogPost' => 'App\Policies\BlogPostPolicy',
-         'App\User' => 'App\Policies\UserPolicy'
+         'App\User' => 'App\Policies\UserPolicy',
         // App\BlogPost::class => BlogPostPolicy::class
     ];
 

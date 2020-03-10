@@ -184,13 +184,13 @@ class PostController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        //
+        
         $post = BlogPost::findOrFail($id);
+        $this->authorize('posts.delete',$post);
         // if(Gate::denies('delete-post', $post)){
         //     abort(403, 'You are not able to delete this post.');
         // }
         // $this->authorize('posts.delete',$post);
-        $this->authorize($post);
         $post->delete();
 
         $request->session()->flash('status','Post has been Deleted');

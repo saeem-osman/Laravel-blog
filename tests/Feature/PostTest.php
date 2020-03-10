@@ -104,18 +104,21 @@ class PostTest extends TestCase
         ]);
 
     }
-    public function testDelete(){
+    
+
+    public function testDeleteNew(){
+        
         $user = $this->user();
-        $post = $this->createDummyBlogPost($user);
-        $this->assertDatabaseHas('blog_posts',$post->toArray());
+        $post = $this->createDummyBlogPost($user->id);
+        $this->assertDatabaseHas('blog_posts', $post->toArray());
+
         $this->actingAs($user)
             ->delete("/posts/{$post->id}")
-            ->assertStatus(302)
-                ->assertSessionHas('status');
-        $this->assertEquals(session('status'),'Post has been Deleted');
-        // $this->assertDatabaseMissing('blog_posts',$post->toArray());
+                ->assertStatus(302)
+                    ->assertSessionHas('status');
+        $this->assertEquals(session('status'), 'Blog post was deleted!');
+        // $this->assertDatabaseMissing('blog_posts', $post->toArray());
         $this->assertSoftDeleted('blog_posts', $post->toArray());
-
     }
 
     private function createDummyBlogPost($userId = null): BlogPost{

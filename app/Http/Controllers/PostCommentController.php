@@ -14,7 +14,7 @@ use App\Http\Resources\Comment as CommentResource;
 class PostCommentController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth')->only(['store']);
+        $this->middleware('auth')->only(['store','delete']);
     }
     //
 

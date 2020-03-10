@@ -65,7 +65,6 @@ class BlogPostPolicy
      */
     public function delete(User $user, BlogPost $blogPost)
     {
-        // dd($blogPost->user_id);
         return $user->id === $blogPost->user_id;
     }
 
